@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { errorHandler } from './middlewares/error.middleware';
 import { router as authRouter } from './routes/auth.routes';
+import { router as contentRouter } from './routes/content.routes';
 
 const app = express();
 const corsOptions = {
@@ -18,6 +19,7 @@ app.use(cookieParser());
 
 //routes
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/content', contentRouter);
 
 app.use(errorHandler);
 

@@ -2,7 +2,7 @@ import mongoose, { Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 import ApiError from '../utils/apiError';
 
-export interface UserInterface extends mongoose.Document {
+export interface UserInterface  {
 	_id: string | Types.ObjectId;
 	username: string;
 	email: string;
