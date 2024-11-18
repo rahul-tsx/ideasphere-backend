@@ -23,3 +23,22 @@ export const addContentSchema = z.object({
 	tags: tagsSchema,
 	note: z.string().optional(),
 });
+
+export const updateContentSchema = z.object({
+	title: z
+		.string()
+		.optional()
+		.refine((value) => value === undefined || value.length > 0, {
+			message: 'Title cannot be empty if provided',
+		})
+		.transform((value) => (value ? value.trim() : undefined))
+		.refine((value) => value === undefined || value.length >= 3, {
+			message: 'Title should be at least 3 characters long',
+		})
+		.refine((value) => value === undefined || value.length <= 70, {
+			message: 'Title should be maximum 70 characters long',
+		}),
+	type: z.enum(CONTENT_TYPES).optional(),
+	tags: tagsSchema,
+	note: z.string().optional(),
+});

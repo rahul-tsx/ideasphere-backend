@@ -40,6 +40,7 @@ const contentSchema = new mongoose.Schema<ContentInterface>(
 	{ timestamps: true }
 );
 
+
 export const Content = mongoose.model<ContentInterface>(
 	'Content',
 	contentSchema
