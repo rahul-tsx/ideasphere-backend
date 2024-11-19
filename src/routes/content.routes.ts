@@ -13,7 +13,10 @@ router
 	.patch(contentController.updateContent)
 	.delete(contentController.deleteContent);
 
-router.route('/:contentid/share').get(contentController.updateContent);
-router.route('/:contentid/copy').post(contentController.updateContent);
+router.route('/:contentid/share').get(contentController.shareContent);
+
+router.route('/:hash').get(contentController.fetchContent);
+
+router.route('/:hash/copy').post(contentController.copyContent);
 
 export { router };

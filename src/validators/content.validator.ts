@@ -42,3 +42,6 @@ export const updateContentSchema = z.object({
 	tags: tagsSchema,
 	note: z.string().optional(),
 });
+export const toggleSphereAccessSchema = z.object({
+	active: z.boolean({ required_error: 'Cannot be empty' }),
+});
