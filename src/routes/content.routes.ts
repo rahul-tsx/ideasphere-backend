@@ -9,11 +9,11 @@ router
 	.get(contentController.getAllContent)
 	.post(contentController.addContent);
 router
-	.route('/:id')
+	.route('/:contentid')
 	.patch(contentController.updateContent)
 	.delete(contentController.deleteContent);
 
-router.route('/:id/share').get(contentController.updateContent);
-router.route('/:id/copy').post(contentController.updateContent);
+router.route('/:contentid/share').get(contentController.updateContent);
+router.route('/:contentid/copy').post(contentController.updateContent);
 
 export { router };

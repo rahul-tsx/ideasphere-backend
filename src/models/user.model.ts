@@ -2,11 +2,12 @@ import mongoose, { Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 import ApiError from '../utils/apiError';
 
-export interface UserInterface  {
+export interface UserInterface {
 	_id: string | Types.ObjectId;
 	username: string;
 	email: string;
 	password: string | undefined;
+	role: 'user' | 'superuser';
 	isPasswordCorrect(password: string): Promise<boolean>;
 }
 
@@ -25,7 +26,11 @@ const userSchema = new mongoose.Schema<UserInterface>(
 			trim: true,
 			required: true,
 		},
-
+		role: {
+			type: String,
+			enum: ['user', 'superuser'],
+			default: 'user',
+		},
 		// photo: {
 		// 	type: String,
 		// },

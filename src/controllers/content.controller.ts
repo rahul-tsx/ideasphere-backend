@@ -8,6 +8,8 @@ import ApiError from '../utils/apiError';
 import { Content } from '../models/content.model';
 import { ApiResponse } from '../utils/apiResponse';
 import { APIFeatures } from '../utils/apiFeatures';
+import { SharedIdea, SharedIdeasInterface } from '../models/sharedIdeas.model';
+import mongoose from 'mongoose';
 
 const addContent = asyncHandler(async (req: Request, res: Response) => {
 	const validatedData = addContentSchema.safeParse(req.body);
@@ -113,9 +115,67 @@ const shareContent = asyncHandler(async (req: Request, res: Response) => {
 	}
 	const content = await Content.findById(id);
 });
+
+const isPopulatedSphere = (
+	x: mongoose.Types.ObjectId | { username: string }
+): x is { username: string } => {
+	return (x as { username: string }).username !== undefined;
+};
+
+const shareSphere = asyncHandler(async (req: Request, res: Response) => {
+	const sharedSphere = await SharedIdea.findOne({
+		ownerId: req.user!._id,
+	}).populate('ownerId', 'username');
+
+	if (!sharedSphere || !sharedSphere.ownerId) {
+		throw new ApiError(404, 'Sphere not found');
+	}
+
+	if (isPopulatedSphere(sharedSphere.ownerId)) {
+		console.log(sharedSphere.ownerId.username);
+	} else {
+		throw new ApiError(500, 'OwnerId not populated as expected');
+	}
+
+	const sharedLink = `${sharedSphere.ownerId.username}/${sharedSphere.hash}`;
+	return res
+		.status(200)
+		.json(new ApiResponse(200, sharedLink, 'Link Generated'));
+});
+const fetchSphere = asyncHandler(async (req: Request, res: Response) => {
+	const hash = req.params.hash;
+	const username = req.params.username;
+	if (!hash) {
+		throw new ApiError(400, 'hash not provided');
+	}
+	const sharedSphere = await SharedIdea.findOne({
+		hash,
+	}).populate('ownerId', 'username _id');
+
+	if (!sharedSphere || !sharedSphere.ownerId) {
+		throw new ApiError(404, 'Sphere not found');
+	}
+
+	if (isPopulatedSphere(sharedSphere.ownerId)) {
+		console.log(sharedSphere.ownerId.username);
+		if (sharedSphere.ownerId.username !== username) {
+			throw new ApiError(400, 'Invalid link');
+		}
+	} else {
+		throw new ApiError(500, 'OwnerId not populated as expected');
+	}
+	const Sphere = await Content.find({ authorId: sharedSphere.ownerId._id });
+	return res
+		.status(200)
+		.json(new ApiResponse(200, Sphere, 'Fetched Sphere'));
+});
+const copySphere = asyncHandler(async (req: Request, res: Response) => {});
 export const contentController = {
 	addContent,
 	getAllContent,
 	updateContent,
 	deleteContent,
+	shareSphere,
+	copySphere,
+	fetchSphere,
 };

@@ -8,3 +8,5 @@ export const CONTENT_TYPES = [
 	'article',
 	'blog',
 ] as const;
+
+export const ROLE_TYPES = ['user', 'superuser'] as const;
