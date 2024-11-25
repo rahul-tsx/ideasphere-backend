@@ -4,11 +4,12 @@ import cookieParser from 'cookie-parser';
 import { errorHandler } from './middlewares/error.middleware';
 import { router as authRouter } from './routes/auth.routes';
 import { router as contentRouter } from './routes/content.routes';
+import { router as tagsRouter } from './routes/tags.routes';
 
 const app = express();
 const corsOptions = {
 	origin: ['http://localhost:5173'],
-	methods: ['POST', 'GET', 'PUT', 'DELETE'],
+	methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
 	credentials: true,
 };
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 //routes
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/content', contentRouter);
+app.use('/api/v1/tags', tagsRouter);
 app.use('/api/v1/shared', contentRouter);
 
 app.use(errorHandler);

@@ -32,6 +32,16 @@ const getAllTags = asyncHandler(async (req: Request, res: Response) => {
 	const tags = await features.query;
 	return res.status(200).json(new ApiResponse(200, tags, 'Tags Fetched'));
 });
+const getTag = asyncHandler(async (req: Request, res: Response) => {
+	const id = req.params.tagid;
+	const features = new APIFeatures(Tag.findById(id), req.query)
+		.filter()
+		.sort()
+		.limitFields()
+		.pagination();
+	const tag = await features.query;
+	return res.status(200).json(new ApiResponse(200, tag, 'Tag Fetched'));
+});
 
 const deleteTag = asyncHandler(async (req: Request, res: Response) => {
 	const id = req.params.tagid;
@@ -58,4 +68,5 @@ export const tagController = {
 	addTag,
 	deleteTag,
 	getAllTags,
+	getTag,
 };

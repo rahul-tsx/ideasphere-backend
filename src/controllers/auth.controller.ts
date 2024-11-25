@@ -94,7 +94,19 @@ const login = asyncHandler(async (req: Request, res: Response) => {
 		.json(new ApiResponse(200, responseData, 'User logged in successfully'));
 });
 
+const logout = asyncHandler(async (req: Request, res: Response) => {
+	res.clearCookie('accessToken');
+	res.status(200).json(new ApiResponse(200, {}, 'Logged Out'));
+});
+const me = asyncHandler(async (req: Request, res: Response) => {
+	return res
+		.status(200)
+		.json(new ApiResponse(200, req.user, 'User is logged in '));
+});
+
 export const authController = {
 	signup,
 	login,
+	me,
+	logout,
 };

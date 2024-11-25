@@ -1,13 +1,13 @@
 import { z } from 'zod';
 import { CONTENT_TYPES } from '../constants';
-const tagsSchema = z.array(
-	z
-		.string()
-		.optional()
-		.refine((value) => !value || /^[0-9a-fA-F]{24}$/.test(value), {
+
+const tagsSchema = z
+	.array(
+		z.string().refine((value) => /^[0-9a-fA-F]{24}$/.test(value), {
 			message: 'Invalid ObjectId format for tags',
 		})
-);
+	)
+	.optional();
 export const addContentSchema = z.object({
 	title: z
 		.string({

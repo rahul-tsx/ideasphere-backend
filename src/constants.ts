@@ -1,4 +1,4 @@
-import { contentTypes } from './types/misc.types';
+
 
 export const DB_NAME = 'ideasphere';
 export const CONTENT_TYPES = [
@@ -7,6 +7,7 @@ export const CONTENT_TYPES = [
 	'youtube',
 	'article',
 	'blog',
+	'podcasts',
 ] as const;
 
 export const ROLE_TYPES = ['user', 'superuser'] as const;

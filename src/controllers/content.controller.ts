@@ -36,7 +36,7 @@ const addContent = asyncHandler(async (req: Request, res: Response) => {
 });
 const getAllContent = asyncHandler(async (req: Request, res: Response) => {
 	const features = new APIFeatures(
-		Content.find({ authorId: req.user }),
+		Content.find({ authorId: req.user }).populate('tags'),
 		req.query
 	)
 		.filter()
@@ -142,7 +142,7 @@ const copyContent = asyncHandler(async (req: Request, res: Response) => {
 	if (!content) {
 		throw new ApiError(404, 'Content not found');
 	}
-	
+
 	if (content.authorId._id.toString() === req.user!._id.toString()) {
 		throw new ApiError(400, 'Cannot copy your own sphere');
 	}
