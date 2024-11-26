@@ -9,7 +9,7 @@ import ApiError from '../utils/apiError';
 import { Content } from '../models/content.model';
 import { ApiResponse } from '../utils/apiResponse';
 import { APIFeatures } from '../utils/apiFeatures';
-import { SharedIdea, SharedIdeasInterface } from '../models/sharedIdeas.model';
+import { SharedIdea } from '../models/sharedIdeas.model';
 import mongoose from 'mongoose';
 
 const addContent = asyncHandler(async (req: Request, res: Response) => {
@@ -127,11 +127,13 @@ const fetchContent = asyncHandler(async (req: Request, res: Response) => {
 	if (!hash) {
 		throw new ApiError(400, 'Hash not provided');
 	}
-	const content = await Content.findOne({ hash }).select('-note -hash');
+	const content = await Content.findOne({ hash })
+		.select('-note -hash')
+		.populate('tags');
 	if (!content) {
 		throw new ApiError(404, 'Content not found');
 	}
-	return res.status(200).json(new ApiResponse(200, content, 'Link Generated'));
+	return res.status(200).json(new ApiResponse(200, content, 'Idea Fetched'));
 });
 const copyContent = asyncHandler(async (req: Request, res: Response) => {
 	const hash = req.params.hash;
@@ -144,7 +146,7 @@ const copyContent = asyncHandler(async (req: Request, res: Response) => {
 	}
 
 	if (content.authorId._id.toString() === req.user!._id.toString()) {
-		throw new ApiError(400, 'Cannot copy your own sphere');
+		throw new ApiError(400, 'Cannot copy your own Idea');
 	}
 
 	const copiedContent = await Content.create({
@@ -176,12 +178,12 @@ const shareSphere = asyncHandler(async (req: Request, res: Response) => {
 	}
 
 	if (isPopulatedSphere(sharedSphere.ownerId)) {
-		console.log(sharedSphere.ownerId.username);
 	} else {
 		throw new ApiError(500, 'OwnerId not populated as expected');
 	}
 
 	const sharedLink = `${sharedSphere.ownerId.username}/${sharedSphere.hash}`;
+
 	return res
 		.status(200)
 		.json(new ApiResponse(200, sharedLink, 'Link Generated'));
@@ -201,7 +203,6 @@ const fetchSphere = asyncHandler(async (req: Request, res: Response) => {
 	}
 
 	if (isPopulatedSphere(sharedSphere.ownerId)) {
-		console.log(sharedSphere.ownerId.username);
 		if (sharedSphere.ownerId.username !== username) {
 			throw new ApiError(400, 'Invalid link');
 		}
@@ -213,7 +214,9 @@ const fetchSphere = asyncHandler(async (req: Request, res: Response) => {
 	}
 	const Sphere = await Content.find({
 		authorId: sharedSphere.ownerId._id,
-	}).select('-note');
+	})
+		.select('-note')
+		.populate('tags');
 	return res.status(200).json(new ApiResponse(200, Sphere, 'Fetched Sphere'));
 });
 const copySphere = asyncHandler(async (req: Request, res: Response) => {
@@ -233,7 +236,6 @@ const copySphere = asyncHandler(async (req: Request, res: Response) => {
 		throw new ApiError(404, 'Sphere not found');
 	}
 	if (isPopulatedSphere(sharedSphere.ownerId)) {
-		console.log(sharedSphere.ownerId.username);
 		if (sharedSphere.ownerId.username !== username) {
 			throw new ApiError(400, 'Invalid link');
 		}
@@ -281,6 +283,7 @@ const toggleSphereAccess = asyncHandler(async (req: Request, res: Response) => {
 		{
 			ownerId: req.user!._id,
 		},
+		{ $set: { active } },
 		{
 			new: true,
 			runValidators: true,

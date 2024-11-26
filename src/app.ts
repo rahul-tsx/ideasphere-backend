@@ -5,6 +5,7 @@ import { errorHandler } from './middlewares/error.middleware';
 import { router as authRouter } from './routes/auth.routes';
 import { router as contentRouter } from './routes/content.routes';
 import { router as tagsRouter } from './routes/tags.routes';
+import { router as sharedRouter } from './routes/share.routes';
 
 const app = express();
 const corsOptions = {
@@ -22,7 +23,7 @@ app.use(cookieParser());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/content', contentRouter);
 app.use('/api/v1/tags', tagsRouter);
-app.use('/api/v1/shared', contentRouter);
+app.use('/api/v1/shared', sharedRouter);
 
 app.use(errorHandler);
 

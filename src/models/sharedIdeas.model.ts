@@ -24,15 +24,21 @@ const sharedIdeaSchema = new mongoose.Schema<SharedIdeasInterface>(
 	{ timestamps: true }
 );
 
+
 sharedIdeaSchema.pre('save', async function (next) {
 	if (this.isNew) {
-	  // Generate hash only for new documents
-	  const dataToHash = `${this._id.toString()}_${this.ownerId.toString()}`;
-	  this.hash = await bcrypt.hash(dataToHash, 10);
+		// Generate hash only for new documents
+		const dataToHash = `${this._id.toString()}_${this.ownerId.toString()}`;
+		let hashed = await bcrypt.hash(dataToHash, 10);
+
+		// Convert bcrypt hash to URL-safe base64 by replacing '+' and '/'
+		hashed = hashed.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+		this.hash = hashed;
 	}
+	
 	next();
-  });
-  
+});
 
 export const SharedIdea = mongoose.model<SharedIdeasInterface>(
 	'SharedIdea',

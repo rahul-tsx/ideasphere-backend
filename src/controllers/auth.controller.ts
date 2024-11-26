@@ -5,6 +5,7 @@ import { ApiResponse } from '../utils/apiResponse';
 import { asyncHandler } from '../utils/asyncHandler';
 import { generateTokens } from '../utils/generateTokens';
 import { loginSchema, signUpSchema } from '../validators/auth.validator';
+import { SharedIdea } from '../models/sharedIdeas.model';
 
 interface ICookieOptions {
 	expires?: Date;
@@ -52,6 +53,7 @@ const signup = asyncHandler(async (req: Request, res: Response) => {
 		password: password,
 		// photo: defaultProfile,
 	});
+	await SharedIdea.create({ active: false, ownerId: user._id });
 	const token = handleCookies(user, res);
 	const createdUser = (await User.findById(user?._id).select(
 		'-password'

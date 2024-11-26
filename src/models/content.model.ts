@@ -46,7 +46,12 @@ contentSchema.pre('save', async function (next) {
 	if (this.isNew) {
 		// Generate hash only for new documents
 		const dataToHash = `${this._id.toString()}`;
-		this.hash = await bcrypt.hash(dataToHash, 10);
+		let hashed = await bcrypt.hash(dataToHash, 10);
+
+		// Convert bcrypt hash to URL-safe base64 by replacing '+' and '/'
+		hashed = hashed.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+		this.hash = hashed;
 	}
 	if (this.isModified('hash')) {
 		next();
