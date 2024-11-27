@@ -9,6 +9,8 @@ router
 	.route('/')
 	.get(contentController.shareSphere)
 	.patch(contentController.toggleSphereAccess);
+	
+router.route('/status').get(contentController.sphereStatus);
 
 //external user
 router.route('/:username/:hash').get(contentController.fetchSphere);

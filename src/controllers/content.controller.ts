@@ -299,6 +299,15 @@ const toggleSphereAccess = asyncHandler(async (req: Request, res: Response) => {
 			)
 		);
 });
+
+const sphereStatus = asyncHandler(async (req: Request, res: Response) => {
+	const sphereStatus = await SharedIdea.findOne({
+		ownerId: req.user?._id,
+	}).select('active');
+	return res
+		.status(200)
+		.json(new ApiResponse(201, sphereStatus, `Sphere Status fetched`));
+});
 export const contentController = {
 	addContent,
 	getAllContent,
@@ -308,6 +317,7 @@ export const contentController = {
 	copySphere,
 	fetchSphere,
 	toggleSphereAccess,
+	sphereStatus,
 	shareContent,
 	fetchContent,
 	copyContent,
