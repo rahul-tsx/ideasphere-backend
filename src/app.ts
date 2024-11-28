@@ -21,11 +21,11 @@ const corsOptions: CorsOptions = {
 			? callback(null, true)
 			: callback(new Error('Not allowed by CORS'));
 	},
+	allowedHeaders: ['access-control-allow-origin', 'authorization'],
 	methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
 	credentials: true,
 };
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(cookieParser());
