@@ -11,7 +11,6 @@ export const fetchToken = (req: Request) => {
 		req.cookies?.accessToken ||
 		req.header('Authorization')?.replace('Bearer ', '');
 	if (!token) {
-		console.error('Token not received from frontend');
 		throw new ApiError(401, 'Unauthorized request');
 	}
 

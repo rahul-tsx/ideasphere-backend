@@ -7,7 +7,6 @@ app.get('/', (req, res) => {
 	res.send('<h1>Ideasphere backend running</h1>');
 });
 
-
 connectDB()
 	.then(() => {
 		app.listen(process.env.PORT || 5001, () => {
@@ -21,9 +20,8 @@ connectDB()
 		console.log('MongoDB connection failed!!!');
 	});
 
-console.log('Hello world');
-if (process.env.NODE_ENV === "development") {
-    console.log("The application is running in development mode.");
+if (process.env.NODE_ENV === 'development') {
+	console.log('The application is running in development mode.');
 } else {
-    console.log("The application is NOT running in development mode.");
+	console.log('The application is NOT running in development mode.');
 }
