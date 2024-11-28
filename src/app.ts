@@ -16,11 +16,7 @@ const allowedOrigins = process.env
 	.map((origin) => origin);
 
 const corsOptions: CorsOptions = {
-	origin: (origin, callback) => {
-		allowedOrigins.includes(origin!)
-			? callback(null, true)
-			: callback(new Error('Not allowed by CORS'));
-	},
+	origin: '*',
 	allowedHeaders: ['access-control-allow-origin', 'authorization'],
 	methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
 	credentials: true,
@@ -32,7 +28,10 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(cookieParser());
 
 app.use((req, res, next) => {
-	res.setHeader('Access-Control-Allow-Origin', allowedOrigins[0]);
+	res.setHeader(
+		'Access-Control-Allow-Origin',
+		'https://ideasphere-fawn.vercel.app/'
+	);
 
 	next();
 });
