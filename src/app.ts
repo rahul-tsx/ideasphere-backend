@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
 	res.setHeader(
 		'Access-Control-Allow-Origin',
-		'https://ideasphere-fawn.vercel.app/'
+		'https://ideasphere-fawn.vercel.app'
 	);
 
 	next();
