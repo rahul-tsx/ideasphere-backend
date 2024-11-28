@@ -16,7 +16,11 @@ const allowedOrigins = process.env
 	.map((origin) => origin);
 
 const corsOptions: CorsOptions = {
-	origin: '*',
+	origin: (origin, callback) => {
+		allowedOrigins.includes(origin!)
+			? callback(null, true)
+			: callback(new Error('Not allowed by CORS'));
+	},
 	allowedHeaders: ['access-control-allow-origin', 'authorization'],
 	methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
 	credentials: true,
