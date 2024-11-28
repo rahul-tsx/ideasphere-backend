@@ -28,7 +28,7 @@ const handleCookies = (user: UserInterface, res: Response) => {
 
 		httpOnly: true,
 		path: '/',
-		// sameSite: 'None',
+		sameSite: 'none',
 	};
 	const token = generateTokens(user);
 	if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
