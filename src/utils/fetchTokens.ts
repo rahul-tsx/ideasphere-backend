@@ -7,14 +7,14 @@ export const fetchToken = (req: Request) => {
 		throw new ApiError(404, 'JWT ACCESS TOKEN NOT FOUND');
 	}
 	const tokenSecret = process.env.ACCESS_TOKEN_SECRET;
-	const token: { accessToken: string } =
+	const token: string =
 		req.cookies?.accessToken ||
 		req.header('Authorization')?.replace('Bearer ', '');
 	if (!token) {
 		throw new ApiError(401, 'Unauthorized request');
 	}
 
-	const validToken = jwt.verify(token.accessToken, tokenSecret);
+	const validToken = jwt.verify(token, tokenSecret);
 	if (!validToken) throw new ApiError(498, 'Invalid Access Token');
 
 	return validToken as JwtPayload;

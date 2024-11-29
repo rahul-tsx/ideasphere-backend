@@ -28,12 +28,24 @@ const handleCookies = (user: UserInterface, res: Response) => {
 
 		httpOnly: true,
 		path: '/',
-		sameSite: 'none',
 	};
 	const token = generateTokens(user);
 	if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-	res.cookie('accessToken', token, cookieOptions);
+	if (process.env.NODE_ENV === 'production') cookieOptions.sameSite = 'none';
+	res.cookie('accessToken', token.accessToken, cookieOptions);
 	return token.accessToken;
+};
+const unsetCookies = (res: Response) => {
+	const cookieOptions: ICookieOptions = {
+		maxAge: 0,
+		expires: new Date(0),
+		httpOnly: true,
+		path: '/',
+	};
+
+	if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+	if (process.env.NODE_ENV === 'production') cookieOptions.sameSite = 'none';
+	res.cookie('accessToken', {}, cookieOptions);
 };
 
 const signup = asyncHandler(async (req: Request, res: Response) => {
@@ -97,7 +109,8 @@ const login = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const logout = asyncHandler(async (req: Request, res: Response) => {
-	res.clearCookie('accessToken');
+	// res.clearCookie('accessToken');
+	unsetCookies(res);
 	res.status(200).json(new ApiResponse(200, {}, 'Logged Out'));
 });
 const me = asyncHandler(async (req: Request, res: Response) => {
